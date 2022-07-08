@@ -1,11 +1,20 @@
-const { expect } = require("chai");
-const { clickElement, getText } = require("./lib/commands.js");
+const {
+  getStartPage,
+  clickSeanceDay,
+  clickSeanceTime,
+  takeChairs,
+  booking,
+  checkQRCode,
+  checkCountBookedChairs,
+  prepareForSadTest,
+  checkAllChairsAreTaken,
+} = require("./lib/commands.js");
 
 let page;
 
-beforeEach(async () => {
+beforeEach(async function () {
   page = await browser.newPage();
-  await page.goto("http://qamid.tmweb.ru/client/index.php");
+  await page.goto(getStartPage());
 });
 
 afterEach(() => {
@@ -14,28 +23,42 @@ afterEach(() => {
 
 describe("Booking tests", () => {
   test("Booking ticket", async () => {
-    await clickElement(page, ".page-nav__day:nth-child(3)");
-    await clickElement(page, ".movie-seances__time");
-    await clickElement(page, ".buying-scheme__chair:not(.buying-scheme__chair_taken)");
-    await clickElement(page, ".acceptin-button");
-    await clickElement(page, ".acceptin-button");
-    let actual = await page.$eval(".ticket__info-qr", img => img.getAttribute('src') );
-    expect(actual).equal("i/QR_code.png");
+    // выбираем день
+    await clickSeanceDay(page, 3);
+    // выбираем сеанс
+    await clickSeanceTime(page);
+    // выбираем места
+    await takeChairs(page);
+    // бронируем
+    // в данном случае нужно именно 2 раза нажать кнопку,
+    // чтобы появился QR код
+    await booking(page, 2);
+    // проверяем наличие QR кода
+    await checkQRCode(page);
   });
   test("Booking multiple tickets", async () => {
-    await clickElement(page, ".page-nav__day:nth-child(4)");
-    await clickElement(page, ".movie-seances__time");
-    await clickElement(page, ".buying-scheme__chair:not(.buying-scheme__chair_taken,.buying-scheme__chair_selected)");
-    await clickElement(page, ".buying-scheme__chair:not(.buying-scheme__chair_taken,.buying-scheme__chair_selected)");
-    await clickElement(page, ".buying-scheme__chair:not(.buying-scheme__chair_taken,.buying-scheme__chair_selected)");
-    await clickElement(page, ".acceptin-button");
-    await clickElement(page, ".acceptin-button");
-    let actual = await getText(page, ".ticket__chairs");
-    expect(actual.split(',').length).equal(3);
+    // кол-во мест, которые будем бронировать
+    let count = 3;
+    // выбираем день
+    await clickSeanceDay(page, 2);
+    // выбираем сеанс
+    await clickSeanceTime(page);
+    // выбираем места
+    await takeChairs(page, count);
+    // бронируем
+    await booking(page);
+    // проверяем кол-во забронированных мест
+    await checkCountBookedChairs(page, count);
   });
-  test("Fail booking", async () => {
-    await page.waitForSelector('.movie-seances__time');
-    let actual = await page.$eval(".movie-seances__time", button => button.getAttribute("class"));
-    expect(actual).contain("acceptin-button-disabled");
+  test("Fail booking, because all chairs are taken", async () => {
+      let day = 4;
+      // подготавливем условия для теста
+      await prepareForSadTest(page, day);
+      // выбираем день
+      await clickSeanceDay(page, day);
+      // выбираем сеанс
+      await clickSeanceTime(page);
+      // проверяем что все места заняты
+      await checkAllChairsAreTaken(page);
   });
 });

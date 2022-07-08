@@ -1,0 +1,14 @@
+{
+    "startUrl": "http://qamid.tmweb.ru/client/index.php",
+    "paramMark": "{$param}",
+    "disabledTime": "acceptin-button-disabled",
+    "QRsrc": "i/QR_code.png",
+    "selectors": {
+        "seanceDay": ".page-nav__day:nth-child({$param})",
+        "seanceTime": ".movie-seances__time",
+        "freeChair": ".buying-scheme__wrapper .buying-scheme__chair:not(.buying-scheme__chair_taken,.buying-scheme__chair_selected)",
+        "acceptBtn": ".acceptin-button",
+        "buyedChairs": ".ticket__chairs",
+        "QRCodeImg": ".ticket__info-qr"
+    }
+}
