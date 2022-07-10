@@ -7,6 +7,7 @@
         "seanceDay": ".page-nav__day:nth-child({$param})",
         "seanceTime": ".movie-seances__time",
         "freeChair": ".buying-scheme__wrapper .buying-scheme__chair:not(.buying-scheme__chair_taken,.buying-scheme__chair_selected)",
+        "takenChair": ".buying-scheme__wrapper .buying-scheme__chair_taken",
         "acceptBtn": ".acceptin-button",
         "buyedChairs": ".ticket__chairs",
         "QRCodeImg": ".ticket__info-qr"

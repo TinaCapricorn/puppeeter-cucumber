@@ -11,6 +11,8 @@ const {
 } = require("./lib/commands.js");
 
 let page;
+const day = 2;
+const time = "23:45";
 
 beforeEach(async function () {
   page = await browser.newPage();
@@ -24,9 +26,9 @@ afterEach(() => {
 describe("Booking tests", () => {
   test("Booking ticket", async () => {
     // выбираем день
-    await clickSeanceDay(page, 3);
+    await clickSeanceDay(page, day);
     // выбираем сеанс
-    await clickSeanceTime(page);
+    await clickSeanceTime(page, time);
     // выбираем места
     await takeChairs(page);
     // бронируем
@@ -40,9 +42,9 @@ describe("Booking tests", () => {
     // кол-во мест, которые будем бронировать
     let count = 3;
     // выбираем день
-    await clickSeanceDay(page, 2);
+    await clickSeanceDay(page, day);
     // выбираем сеанс
-    await clickSeanceTime(page);
+    await clickSeanceTime(page, time);
     // выбираем места
     await takeChairs(page, count);
     // бронируем
@@ -51,13 +53,12 @@ describe("Booking tests", () => {
     await checkCountBookedChairs(page, count);
   });
   test("Fail booking, because all chairs are taken", async () => {
-      let day = 4;
       // подготавливем условия для теста
-      await prepareForSadTest(page, day);
+      await prepareForSadTest(page, day, time);
       // выбираем день
       await clickSeanceDay(page, day);
       // выбираем сеанс
-      await clickSeanceTime(page);
+      await clickSeanceTime(page, time);
       // проверяем что все места заняты
       await checkAllChairsAreTaken(page);
   });

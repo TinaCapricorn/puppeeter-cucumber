@@ -28,11 +28,11 @@ Given("user is on {string}", async function (url) {
   await this.page.goto(url);
 });
 
-When("user booking {int} ticket", async function (count) {
+When("user booking {int} ticket at day {int} and time {string}", async function (count, day, time) {
   // выбираем день
-  await clickSeanceDay(this.page, 3);
+  await clickSeanceDay(this.page, day);
   // выбираем сеанс
-  await clickSeanceTime(this.page);
+  await clickSeanceTime(this.page, time);
   // выбираем места
   await takeChairs(this.page, count);
   // бронируем
@@ -51,14 +51,16 @@ Then("user see {int} places in booking data", async function (count) {
   await checkCountBookedChairs(this.page, count);
 });
 
-When("user try to booking ticket", async function () {
-  let day = 4;
+
+When("all chairs are taken at day {int} and time {string}", async function (day, time) {
   // подготавливем условия для теста
-  await prepareForSadTest(this.page, day);
+  await prepareForSadTest(this.page, day, time); 
+});
+When("user try to booking ticket at day {int} and time {string}", async function (day, time) {
   // выбираем день
   await clickSeanceDay(this.page, day);
   // выбираем сеанс
-  await clickSeanceTime(this.page);
+  await clickSeanceTime(this.page, time); 
 });
 
 Then("user failed booking because all chairs are taken", async function () {
